@@ -8,50 +8,72 @@ const statusEl = document.getElementById('status');
 let model;
 let ultimoEnvio = 0;
 
-// Objetivos de IA
-const objetivosValidos = ["person", "dog", "cat", "bird", "sheep", "cow"];
+// Lista de objetivos para filtrar lo que ve la cámara
+const objetivosValidos = ["person", "dog", "cat", "bird", "horse", "sheep", "cow", "elephant", "bear", "zebra", "giraffe"];
 
-async function init() {
-    statusEl.textContent = "Carregant model...";
-    model = await cocoSsd.load();
-    statusEl.textContent = "Model a punt. Iniciant càmera...";
-    
-    const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { facingMode: 'environment', width: 640, height: 480 } 
-    });
-    video.srcObject = stream;
-    video.onloadedmetadata = () => {
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        detect();
-    };
+async function initIA() {
+  statusEl.textContent = "⏳ Carregant IA...";
+  // Carga del modelo COCO-SSD
+  model = await cocoSsd.load();
+  statusEl.textContent = "📷 Iniciant càmera...";
+  startCamera();
 }
 
-async function detect() {
-    const predictions = await model.detect(video);
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    predictions.forEach(p => {
-        if (objetivosValidos.includes(p.class) && p.score > 0.6) {
-            // Dibujamos el cuadro en ROJO (estética solicitada)
-            ctx.strokeStyle = "#FF0000";
-            ctx.lineWidth = 3;
-            ctx.strokeRect(...p.bbox);
-
-            const ahora = Date.now();
-            if (ahora - ultimoEnvio > 1000) {
-                labelEl.textContent = p.class.toUpperCase();
-                scoreEl.textContent = Math.round(p.score * 100);
-                
-                // Envío a Microbit vía UART
-                if (typeof sendUARTData === "function") {
-                    sendUARTData(`${p.class}:${Math.round(p.score * 100)}`);
-                }
-                ultimoEnvio = ahora;
-            }
-        }
-    });
-    requestAnimationFrame(detect);
+async function startCamera() {
+  // Usamos cámara trasera para detectar lo que tenemos delante
+  const stream = await navigator.mediaDevices.getUserMedia({ 
+    video: { facingMode: 'environment' } 
+  });
+  video.srcObject = stream;
+  
+  video.onloadedmetadata = () => {
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    detectFrame();
+  };
 }
 
-init();
+async function detectFrame() {
+  const predictions = await model.detect(video);
+  
+  // Limpiar y dibujar el frame de video actual
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+  let detectado = false;
+
+  predictions.forEach(p => {
+    if (objetivosValidos.includes(p.class)) {
+      detectado = true;
+      const score = Math.round(p.score * 100);
+      
+      // Estilo visual similar al original (verde neón)
+      ctx.strokeStyle = "#00FF00";
+      ctx.lineWidth = 3;
+      ctx.strokeRect(...p.bbox);
+      
+      // Actualizar el panel de datos superior
+      labelEl.textContent = p.class;
+      scoreEl.textContent = score;
+
+      // Lógica de envío Bluetooth
+      const ahora = Date.now();
+      // Mantenemos el control de flujo para no saturar la micro:bit
+      if (ahora - ultimoEnvio > 500) { 
+        // ENVIAMOS: nombre del animal + score (Ejemplo: "dog:85")
+        const mensaje = `${p.class}:${score}`;
+        sendUARTData(mensaje); 
+        ultimoEnvio = ahora;
+      }
+    }
+  });
+
+  if (!detectado) {
+    labelEl.textContent = "--";
+    scoreEl.textContent = "--";
+  }
+
+  requestAnimationFrame(detectFrame);
+}
+
+initIA();
