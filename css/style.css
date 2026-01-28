@@ -1,78 +1,158 @@
-* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
 body {
-    margin: 0;
-    background-color: #000;
-    color: #00FF00;
-    font-family: 'Courier New', Courier, monospace;
-    overflow: hidden;
+  margin: 0;
+  font-family: sans-serif;
+  background: #111;
+  color: #fff;
+  text-align: center;
+}
+header {
+  background: #222;
+  padding: 10px;
+  font-size: 1.5em;
+}
+canvas {
+  width: 100%;
+  height: auto;
+  min-height: 240px;
+  border-radius: 10px;
+  background-color: black;
+}
+#video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+  transform: scaleX(-1);
+  z-index: 1;
+  object-fit: cover;
+}
+#controls {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  z-index: 10000;
+}
+button {
+  font-size: 1em;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+}
+#info-layer {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.95);
+  color: white;
+  z-index: 10001;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+#data-panel {
+  margin-top: 10px;
+  font-size: 1.2em;
+  font-weight: bold;
+}
+#info-layer {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.95);
+  color: white;
+  z-index: 10001;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+.info-box {
+  background: #222;
+  padding: 2rem;
+  border-radius: 10px;
+  max-width: 500px;
+  text-align: left;
+  box-shadow: 0 0 15px rgba(0,0,0,0.8);
+}
+.info-box ul {
+  padding-left: 1rem;
+}
+.info-box a {
+  color: #4fc3f7;
+}
+.close-btn {
+  background: #f44336;
+  color: white;
+  font-size: 1em;
+  border: none;
+  padding: 10px 16px;
+  margin-top: 1rem;
+  border-radius: 5px;
 }
 
 #video-container {
-    position: relative;
-    width: 100vw;
-    height: 100vh;
+  position: relative;
+  width: 100%;
+  max-width: 640px;
+  margin: auto;
 }
-
+#video, #canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+  z-index: 2;
+}
 #video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transform: scaleX(-1); /* Espejo si usas frontal, quitar si usas trasera */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+  transform: scaleX(-1);
+  z-index: 1;
+  object-fit: cover;
 }
-
 #canvas {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 5;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+  z-index: 2;
 }
 
-/* Panel HUD superior */
 #data-panel {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    z-index: 10;
-    background: rgba(0, 0, 0, 0.6);
-    border-left: 3px solid #00FF00;
-    padding: 10px 20px;
+  position: fixed;
+  top: 50px;
+  left: 0;
+  width: 100%;
+  padding: 8px 0;
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #00e5ff;
+  z-index: 9999;
 }
-
-.data-group { margin-bottom: 5px; }
-.label { font-size: 0.7rem; color: #00AA00; display: block; }
-.value { font-size: 1.5rem; font-weight: bold; }
-.unit { font-size: 0.8rem; margin-left: 2px; }
-
-/* Controles inferiores */
-#controls {
-    position: absolute;
-    bottom: 30px;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    z-index: 10;
-}
-
-.btn-jface {
-    background: rgba(0, 255, 0, 0.1);
-    border: 1px solid #00FF00;
-    color: #00FF00;
-    padding: 12px 24px;
-    font-size: 1rem;
-    text-transform: uppercase;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-#status {
-    position: absolute;
-    bottom: 5px;
-    width: 100%;
-    text-align: center;
-    font-size: 0.6rem;
-    color: #555;
+#data-panel {
+  display: inline-block;
+    padding: 0.5em;
+  border-radius: 0.3em;
 }

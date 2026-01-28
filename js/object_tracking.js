@@ -8,72 +8,62 @@ const statusEl = document.getElementById('status');
 let model;
 let ultimoEnvio = 0;
 
-// Lista de objetivos para filtrar lo que ve la cámara
-const objetivosValidos = ["person", "dog", "cat", "bird", "horse", "sheep", "cow", "elephant", "bear", "zebra", "giraffe"];
+async function setupApp() {
+    statusEl.textContent = "Carregant IA...";
+    model = await cocoSsd.load();
+    
+    // Configuración de cámara trasera
+    const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode: 'environment' } 
+    });
+    video.srcObject = stream;
 
-async function initIA() {
-  statusEl.textContent = "⏳ Carregant IA...";
-  // Carga del modelo COCO-SSD
-  model = await cocoSsd.load();
-  statusEl.textContent = "📷 Iniciant càmera...";
-  startCamera();
+    video.onloadedmetadata = () => {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        detect();
+    };
 }
 
-async function startCamera() {
-  // Usamos cámara trasera para detectar lo que tenemos delante
-  const stream = await navigator.mediaDevices.getUserMedia({ 
-    video: { facingMode: 'environment' } 
-  });
-  video.srcObject = stream;
-  
-  video.onloadedmetadata = () => {
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    detectFrame();
-  };
-}
+async function detect() {
+    const predictions = await model.detect(video);
+    
+    // Limpiar canvas y dibujar video
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-async function detectFrame() {
-  const predictions = await model.detect(video);
-  
-  // Limpiar y dibujar el frame de video actual
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    let encontrado = false;
 
-  let detectado = false;
+    predictions.forEach(p => {
+        // Filtramos por confianza > 60%
+        if (p.score > 0.6) {
+            encontrado = true;
+            
+            // Dibujar cuadro Verde Neón (Estética Jface)
+            ctx.strokeStyle = "#00FF00";
+            ctx.lineWidth = 3;
+            ctx.strokeRect(...p.bbox);
 
-  predictions.forEach(p => {
-    if (objetivosValidos.includes(p.class)) {
-      detectado = true;
-      const score = Math.round(p.score * 100);
-      
-      // Estilo visual similar al original (verde neón)
-      ctx.strokeStyle = "#00FF00";
-      ctx.lineWidth = 3;
-      ctx.strokeRect(...p.bbox);
-      
-      // Actualizar el panel de datos superior
-      labelEl.textContent = p.class;
-      scoreEl.textContent = score;
+            const ahora = Date.now();
+            if (ahora - ultimoEnvio > 1000) { // 1 segundo
+                labelEl.textContent = p.class.toUpperCase();
+                scoreEl.textContent = Math.round(p.score * 100);
+                
+                // Enviar a micro:bit
+                if (typeof sendUARTData === "function") {
+                    sendUARTData(`${p.class}:${Math.round(p.score * 100)}`);
+                }
+                ultimoEnvio = ahora;
+            }
+        }
+    });
 
-      // Lógica de envío Bluetooth
-      const ahora = Date.now();
-      // Mantenemos el control de flujo para no saturar la micro:bit
-      if (ahora - ultimoEnvio > 500) { 
-        // ENVIAMOS: nombre del animal + score (Ejemplo: "dog:85")
-        const mensaje = `${p.class}:${score}`;
-        sendUARTData(mensaje); 
-        ultimoEnvio = ahora;
-      }
+    if (!encontrado) {
+        labelEl.textContent = "--";
+        scoreEl.textContent = "--";
     }
-  });
 
-  if (!detectado) {
-    labelEl.textContent = "--";
-    scoreEl.textContent = "--";
-  }
-
-  requestAnimationFrame(detectFrame);
+    requestAnimationFrame(detect);
 }
 
-initIA();
+setupApp();

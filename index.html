@@ -3,18 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>JAnimalDetection - IA Tracker</title>
+    <title>JAnimalDetection</title>
+    <link rel="stylesheet" href="css/style.css">
     
-    <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png">
-    <link rel="manifest" href="site.webmanifest">
-    <meta name="theme-color" content="#000000">
-
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
-
-    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <div id="video-container">
@@ -22,31 +15,19 @@
         <canvas id="canvas"></canvas>
 
         <div id="data-panel">
-            <div class="data-group">
-                <span class="label">OBJECTE</span>
-                <span id="label" class="value">--</span>
-            </div>
-            <div class="data-group">
-                <span class="label">CONFIANÇA</span>
-                <span id="score" class="value">--</span><span class="unit">%</span>
-            </div>
+            <p>OBJECTE: <span id="label">--</span></p>
+            <p>PROBABILITAT: <span id="score">--</span>%</p>
         </div>
 
-        <div id="controls">
-            <button id="btnConnect" class="btn-jface">Connectar Micro:bit</button>
-            <button id="btnHelp" class="btn-jface" onclick="showHelp()">?</button>
+        <div id="ui-controls">
+            <button id="btnConnect" class="control-btn">CONNECTAR</button>
+            <button id="btnHelp" class="control-btn">?</button>
         </div>
 
-        <div id="status">Esperant càmera...</div>
+        <div id="status">Iniciant sistema...</div>
     </div>
 
     <script src="js/bluetooth_uart.js"></script>
     <script src="js/object_tracking.js"></script>
-    
-    <script>
-        function showHelp() {
-            alert("JAnimalDetection v1.0\n\n1. Prem 'Connectar' per enllaçar amb la micro:bit.\n2. Enfoca un animal o persona amb la càmera.\n3. La IA l'identificarà i enviarà el nom cada 1 segon.\n\nDissenyat per a robots i projectes STEAM.");
-        }
-    </script>
 </body>
 </html>
