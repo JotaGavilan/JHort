@@ -53,33 +53,26 @@ function drawDetections(detections) {
 
   const visible = detections.filter(d => activeCategories.has(d.class));
 
-  // Pas 1: marcs dins del mirror (posicio correcta)
-  ctx.save();
-  ctx.scale(-1, 1);
-  ctx.translate(-canvas.width, 0);
-  visible.forEach(det => {
-    const [x, y, w, h] = det.bbox;
-    ctx.strokeStyle = getCategoryColor(det.class);
-    ctx.lineWidth   = 2;
-    ctx.strokeRect(x, y, w, h);
-  });
-  ctx.restore();
-
-  // Pas 2: etiquetes fora del mirror (text no invertit)
-  // x_mirror = canvas.width - x - w
   ctx.font = 'bold 14px monospace';
   visible.forEach(det => {
-    const [x, y, w] = det.bbox;
+    const [x, y, w, h] = det.bbox;
     const color  = getCategoryColor(det.class);
     const label  = `${det.label} ${det.score}%`;
-    const mx     = canvas.width - x - w;
     const textW  = ctx.measureText(label).width + 8;
     const labelY = Math.max(20, y);
 
+    // Marc
+    ctx.strokeStyle = color;
+    ctx.lineWidth   = 2;
+    ctx.strokeRect(x, y, w, h);
+
+    // Fons etiqueta
     ctx.fillStyle = color;
-    ctx.fillRect(mx, labelY - 20, textW, 20);
+    ctx.fillRect(x, labelY - 20, textW, 20);
+
+    // Text
     ctx.fillStyle = '#000';
-    ctx.fillText(label, mx + 4, labelY - 5);
+    ctx.fillText(label, x + 4, labelY - 5);
   });
 }
 
@@ -87,7 +80,6 @@ function drawDetections(detections) {
 function getCategoryColor(cls) {
   const colors = {
     cat:    '#00e5ff',
-    dog:    '#69ff47',
     bird:   '#ffd740',
     person: '#ff6d00',
     // Residus futurs:
@@ -200,6 +192,27 @@ function buildCategoryList() {
   `).join('');
 }
 
+// Construir selector de model
+function buildModelSelector() {
+  const models  = getModels();
+  const current = getCurrentModel();
+  const wrap    = document.getElementById('model-selector');
+  wrap.innerHTML = Object.entries(models).map(([key, m]) => `
+    <label class="cat-item">
+      <input type="radio" name="modelChoice" value="${key}" ${key === current ? 'checked' : ''}
+             onchange="changeModel('${key}')">
+      <span>${m.label}</span>
+    </label>
+  `).join('');
+}
+
+async function changeModel(key) {
+  statusEl.textContent = '⏳ Carregant model...';
+  stopDetection();
+  await initModel(key);
+  startDetection(video, 300);
+}
+
 function toggleCategory(cls, enabled) {
   if (enabled) activeCategories.add(cls);
   else          activeCategories.delete(cls);
@@ -215,6 +228,7 @@ intervalSlider.addEventListener('input', () => {
 // ── Arrencada ─────────────────────────────────────────────────
 (async () => {
   buildCategoryList();
+  buildModelSelector();
   await startVideo();
   await initModel();
 })();

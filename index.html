@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ca">
+<html lang="ca-ES">
 <head>
   <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32"  href="icons/favicon-32x32.png">
@@ -13,24 +13,24 @@
 </head>
 <body>
 
-  <!-- ── Capçalera ─────────────────────────────────────────── -->
+  <!-- Capçalera -->
   <h1>
     <img src="icons/android-chrome-512x512.png" alt="Icona JHort">
     JHort – Animals amb IA
   </h1>
 
-  <!-- ── Vídeo + Canvas ────────────────────────────────────── -->
+  <!-- Vídeo + Canvas -->
   <div id="video-container">
     <video id="video" autoplay muted playsinline></video>
     <canvas id="canvas"></canvas>
   </div>
 
-  <!-- ── Panel de deteccions (superposat sobre vídeo) ──────── -->
+  <!-- Panel de deteccions -->
   <div id="detection-panel">
     <span class="no-det">Inicialitzant...</span>
   </div>
 
-  <!-- ── Controls inferiors ────────────────────────────────── -->
+  <!-- Controls inferiors -->
   <div id="controls">
     <button id="connectBtn">🔵 Connectar</button>
     <button id="configBtn">⚙️ Configurar</button>
@@ -39,15 +39,23 @@
     <div id="status">⏳ Inicialitzant càmera...</div>
   </div>
 
-  <!-- ── Capa de configuració ──────────────────────────────── -->
+  <!-- Capa de configuració -->
   <div id="config-layer" class="layer">
     <div class="layer-box">
-      <h2>⚙️ Configuració</h2>
-
-      <p>Selecciona els animals que vols detectar:</p>
-      <div id="category-list">
-        <!-- Es construeix dinàmicament des de script.js -->
+      <div class="layer-header">
+        <img src="icons/android-chrome-512x512.png" alt="Icona JHort">
+        <h2>⚙️ Configuració</h2>
       </div>
+
+      <p>Tria els animals que vols detectar:</p>
+      <div id="category-list"></div>
+
+      <p style="margin-top:1.2rem;">Model d'intel·ligència artificial:</p>
+      <div id="model-selector"></div>
+      <p style="font-size:0.78em; margin-top:0.4rem;">
+        El model precís detecta millor a distància però és més lent. Si el mòbil va lent, usa el ràpid.
+        <strong>Canviar el model recarrega la IA</strong> (uns segons).
+      </p>
 
       <div class="interval-control">
         <label for="intervalSlider">Interval d'enviament:</label>
@@ -62,16 +70,19 @@
     </div>
   </div>
 
-  <!-- ── Capa d'informació ──────────────────────────────────── -->
+  <!-- Capa d'informació -->
   <div id="info-layer" class="layer">
     <div class="layer-box">
-      <h2>ℹ️ Informació</h2>
+      <div class="layer-header">
+        <img src="icons/android-chrome-512x512.png" alt="Icona JHort">
+        <h2>ℹ️ Informació</h2>
+      </div>
 
       <p>
         <strong>JHort</strong> utilitza intel·ligència artificial
         (<a href="https://github.com/tensorflow/tfjs-models/tree/master/coco-ssd" target="_blank">TensorFlow.js COCO-SSD</a>)
-        per detectar animals en temps real amb la càmera del dispositiu,
-        i envia les dades a una micro:bit per Bluetooth (sense emparellament previ).
+        per a detectar animals en temps real amb la càmera del dispositiu,
+        i envia les dades a una micro:bit per Bluetooth (sense aparellament previ).
       </p>
 
       <p><strong>Animals detectables:</strong></p>
@@ -82,19 +93,19 @@
         <li>🧍 Persona</li>
       </ul>
 
-      <p><strong>Format de dades enviades per UART:</strong></p>
+      <p><strong>Format de les dades enviades per UART:</strong></p>
       <ul>
         <li>Llista separada per comes: <code>animal:percentatge</code></li>
-        <li>Exemple: <code>gat:87,gos:45</code></li>
-        <li>Si no hi ha cap detecció, no s'envia res.</li>
+        <li>Eixemple: <code>gat:87,gos:45</code></li>
+        <li>Si no es detecta res, no s'envia res.</li>
       </ul>
 
-      <p><strong>⚙️ Configuració:</strong> prem el botó per triar quins animals detectar i cada quant s'envien les dades a la micro:bit (de 1 a 15 segons).</p>
+      <p><strong>⚙️ Configuració:</strong> prem el botó per a triar quins animals detectar i cada quant s'envien les dades a la micro:bit (d'1 a 15 segons).</p>
 
       <p>
-        Aquesta app <strong>NO envia dades a cap servidor</strong>. Tot el processament es fa
-        al navegador, localment. Una vegada carregada la pàgina pots desactivar
-        Internet per assegurar-te que cap dada surt del teu dispositiu.
+        Esta app <strong>NO envia dades a cap servidor</strong>. Tot el processament es fa
+        al navegador, localment. Una volta carregada la pàgina pots desactivar
+        Internet per a assegurar-te que cap dada ix del teu dispositiu.
       </p>
 
       <p>Fet per J. amb ❤️ i tecnologia IA</p>
@@ -104,11 +115,11 @@
     </div>
   </div>
 
-  <!-- ── Llibreries ─────────────────────────────────────────── -->
+  <!-- Llibreries -->
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.17.0/dist/tf.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.3/dist/coco-ssd.min.js"></script>
 
-  <!-- ── Mòduls de l'app ────────────────────────────────────── -->
+  <!-- Mòduls de l'app -->
   <script src="./js/detection_engine.js"></script>
   <script src="./js/bluetooth_uart.js"></script>
   <script src="./js/script.js"></script>

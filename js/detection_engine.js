@@ -3,7 +3,7 @@
 //  JHort – Animals amb IA
 //  Basat en TensorFlow.js + COCO-SSD
 //
-//  Per adaptar aquesta aplicació a una altra categoria (p.ex.
+//  Per adaptar esta aplicació a una altra categoria (p.ex.
 //  residus), cal modificar únicament:
 //    1. CATEGORIES  →  llista de classes COCO acceptades
 //    2. TRANSLATIONS →  nom traduït per a cada classe
@@ -12,18 +12,17 @@
 
 // ── 1. CATEGORIES ACTIVES ────────────────────────────────────
 //  Llista de classes COCO-SSD que l'app mostrarà i enviarà.
-//  Per canviar l'aplicació (residus, etc.) substitueix aquest array.
+//  Per canviar l'aplicació (residus, etc.) substituïx este array.
 //  Classes COCO-SSD disponibles: https://github.com/nightrome/cocostuff
-const CATEGORIES = ['cat', 'dog', 'bird', 'person'];
+const CATEGORIES = ['cat', 'bird', 'person'];
 
 // ── 2. TRADUCCIONS ──────────────────────────────────────────
-//  Nom en català que es mostrarà en pantalla i s'enviarà per UART.
+//  Nom en valencià que es mostrarà en pantalla i s'enviarà per UART.
 const TRANSLATIONS = {
   cat:    'gat',
-  dog:    'gos',
   bird:   'ocell',
   person: 'persona',
-  // ── Afegeix aquí futures categories per a l'app de residus ──
+  // ── Afig ací futures categories per a l'app de residus ──
   // bottle:      'ampolla',
   // cup:         'got',
   // bowl:        'bol',
@@ -31,11 +30,22 @@ const TRANSLATIONS = {
   // chair:       'cadira',
 };
 
-// ── 3. CONFIGURACIÓ DEL MODEL ────────────────────────────────
-const MODEL_CONFIG = {
-  base:  'lite_mobilenet_v2',   // Ràpid i lleuger per a mòbils
-  score_threshold: 0.35,        // Confiança mínima per mostrar detecció
+// ── 3. MODELS DISPONIBLES ────────────────────────────────────
+//  L'usuari pot triar en la pantalla de configuració.
+const MODELS = {
+  lite: {
+    base:  'lite_mobilenet_v2',
+    label: '⚡ Ràpid (recomanat per a mòbils)',
+    score_threshold: 0.20,
+  },
+  precise: {
+    base:  'mobilenet_v2',
+    label: '🔍 Precís (més distància, més lent)',
+    score_threshold: 0.20,
+  },
 };
+
+let currentModelKey = 'lite';   // model actiu per defecte
 
 // ────────────────────────────────────────────────────────────
 //  Internals — no cal modificar per canviar de categoria
@@ -44,18 +54,21 @@ let model = null;
 let isRunning = false;
 let detectionLoop = null;
 
-// Callbacks que el script principal pot registrar
-let onDetectionCallback = null;
+let onDetectionCallback  = null;
 let onModelReadyCallback = null;
 let onModelErrorCallback = null;
 
 /**
- * Inicialitza el model COCO-SSD.
- * Crida onModelReady quan estigui llest, onModelError si falla.
+ * Inicialitza (o reinicialitza) el model COCO-SSD.
+ * @param {string} modelKey  — 'lite' | 'precise'
  */
-async function initModel() {
+async function initModel(modelKey) {
+  if (modelKey) currentModelKey = modelKey;
+  const cfg = MODELS[currentModelKey];
   try {
-    model = await cocoSsd.load(MODEL_CONFIG);
+    stopDetection();
+    model = null;
+    model = await cocoSsd.load({ base: cfg.base });
     if (onModelReadyCallback) onModelReadyCallback();
   } catch (e) {
     console.error('❌ Error carregant el model:', e);
@@ -64,13 +77,15 @@ async function initModel() {
 }
 
 /**
- * Comença el bucle de detecció sobre un element de vídeo o canvas.
+ * Comença el bucle de detecció sobre un element de vídeo.
  * @param {HTMLVideoElement} videoEl
- * @param {number} intervalMs  — interval en mil·lisegons entre deteccions
+ * @param {number} intervalMs
  */
 function startDetection(videoEl, intervalMs) {
   if (isRunning) stopDetection();
   isRunning = true;
+
+  const threshold = MODELS[currentModelKey].score_threshold;
 
   async function detect() {
     if (!isRunning || !model) return;
@@ -81,14 +96,13 @@ function startDetection(videoEl, intervalMs) {
     try {
       const predictions = await model.detect(videoEl);
       const filtered = predictions
-        .filter(p => CATEGORIES.includes(p.class) && p.score >= MODEL_CONFIG.score_threshold)
+        .filter(p => CATEGORIES.includes(p.class) && p.score >= threshold)
         .map(p => ({
-          class:       p.class,
-          label:       TRANSLATIONS[p.class] || p.class,
-          score:       Math.round(p.score * 100),
-          bbox:        p.bbox,   // [x, y, width, height] en px de la imatge original
+          class: p.class,
+          label: TRANSLATIONS[p.class] || p.class,
+          score: Math.round(p.score * 100),
+          bbox:  p.bbox,
         }));
-
       if (onDetectionCallback) onDetectionCallback(filtered);
     } catch (e) {
       console.error('❌ Error en detecció:', e);
@@ -99,22 +113,10 @@ function startDetection(videoEl, intervalMs) {
   detect();
 }
 
-/**
- * Atura el bucle de detecció.
- */
+/** Atura el bucle de detecció. */
 function stopDetection() {
   isRunning = false;
   if (detectionLoop) clearTimeout(detectionLoop);
-}
-
-/**
- * Canvia l'interval del bucle sense aturar-lo del tot.
- * @param {HTMLVideoElement} videoEl
- * @param {number} newIntervalMs
- */
-function updateInterval(videoEl, newIntervalMs) {
-  stopDetection();
-  startDetection(videoEl, newIntervalMs);
 }
 
 // ── API pública ───────────────────────────────────────────────
@@ -123,3 +125,5 @@ function onModelReady(cb)   { onModelReadyCallback  = cb; }
 function onModelError(cb)   { onModelErrorCallback  = cb; }
 function getCategories()    { return CATEGORIES; }
 function getTranslations()  { return TRANSLATIONS; }
+function getModels()        { return MODELS; }
+function getCurrentModel()  { return currentModelKey; }
