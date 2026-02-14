@@ -1,31 +1,118 @@
 <!DOCTYPE html>
 <html lang="ca">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>P.I.A.R III. Detector d'Objectes</title>
+  <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32"  href="icons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16"  href="icons/favicon-16x16.png">
+  <link rel="manifest" href="icons/site.webmanifest">
+  <link rel="icon" href="icons/favicon.ico" type="image/x-icon">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JHort – Animals amb IA</title>
   <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
-  <h1><img src="icons/icon.png" style="width: 2em;"> P.I.A.R III. IA Animals/Persones</h1>
-  
+
+  <!-- ── Capçalera ─────────────────────────────────────────── -->
+  <h1>
+    <img src="icons/android-chrome-512x512.png" alt="Icona JHort">
+    JHort – Animals amb IA
+  </h1>
+
+  <!-- ── Vídeo + Canvas ────────────────────────────────────── -->
   <div id="video-container">
     <video id="video" autoplay muted playsinline></video>
     <canvas id="canvas"></canvas>
   </div>
 
-  <div id="data-panel">Detecció: <span id="label">--</span> | Confiança: <span id="score">--</span>%</div>
-
-  <div id="controls">
-    <button id="connectBtn">🔵 Connectar</button>
-    <button id="fullscreenBtn">⛶ Pantalla completa</button>
-    <div id="status">⏳ Esperant IA...</div>
+  <!-- ── Panel de deteccions (superposat sobre vídeo) ──────── -->
+  <div id="detection-panel">
+    <span class="no-det">Inicialitzant...</span>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
+  <!-- ── Controls inferiors ────────────────────────────────── -->
+  <div id="controls">
+    <button id="connectBtn">🔵 Connectar</button>
+    <button id="configBtn">⚙️ Configurar</button>
+    <button id="fullscreenBtn">⛶ Pantalla completa</button>
+    <button id="infoBtn">ℹ️ Informació</button>
+    <div id="status">⏳ Inicialitzant càmera...</div>
+  </div>
+
+  <!-- ── Capa de configuració ──────────────────────────────── -->
+  <div id="config-layer" class="layer">
+    <div class="layer-box">
+      <h2>⚙️ Configuració</h2>
+
+      <p>Selecciona els animals que vols detectar:</p>
+      <div id="category-list">
+        <!-- Es construeix dinàmicament des de script.js -->
+      </div>
+
+      <div class="interval-control">
+        <label for="intervalSlider">Interval d'enviament:</label>
+        <input type="range" id="intervalSlider" min="1" max="15" value="1" step="1">
+        <span id="intervalLabel">1s</span>
+      </div>
+      <p style="font-size:0.78em; margin-top:0.5rem;">
+        Cada quants segons s'envien les dades a la micro:bit per Bluetooth.
+      </p>
+
+      <button class="close-btn" id="closeConfigBtn">Tancar</button>
+    </div>
+  </div>
+
+  <!-- ── Capa d'informació ──────────────────────────────────── -->
+  <div id="info-layer" class="layer">
+    <div class="layer-box">
+      <h2>ℹ️ Informació</h2>
+
+      <p>
+        <strong>JHort</strong> utilitza intel·ligència artificial
+        (<a href="https://github.com/tensorflow/tfjs-models/tree/master/coco-ssd" target="_blank">TensorFlow.js COCO-SSD</a>)
+        per detectar animals en temps real amb la càmera del dispositiu,
+        i envia les dades a una micro:bit per Bluetooth (sense emparellament previ).
+      </p>
+
+      <p><strong>Animals detectables:</strong></p>
+      <ul>
+        <li>🐱 Gat</li>
+        <li>🐶 Gos</li>
+        <li>🐦 Ocell</li>
+        <li>🧍 Persona</li>
+      </ul>
+
+      <p><strong>Format de dades enviades per UART:</strong></p>
+      <ul>
+        <li>Llista separada per comes: <code>animal:percentatge</code></li>
+        <li>Exemple: <code>gat:87,gos:45</code></li>
+        <li>Si no hi ha cap detecció, no s'envia res.</li>
+      </ul>
+
+      <p><strong>⚙️ Configuració:</strong> prem el botó per triar quins animals detectar i cada quant s'envien les dades a la micro:bit (de 1 a 15 segons).</p>
+
+      <p>
+        Aquesta app <strong>NO envia dades a cap servidor</strong>. Tot el processament es fa
+        al navegador, localment. Una vegada carregada la pàgina pots desactivar
+        Internet per assegurar-te que cap dada surt del teu dispositiu.
+      </p>
+
+      <p>Projecte inspirat en: <a href="https://cardboard.lofirobot.com" target="_blank">cardboard.lofirobot.com</a></p>
+      <p>Fet per J. amb ❤️ i tecnologia IA</p>
+      <p>IES Jorge Juan, Alacant, 2025</p>
+
+      <button class="close-btn" id="closeInfoBtn">Tancar</button>
+    </div>
+  </div>
+
+  <!-- ── Llibreries ─────────────────────────────────────────── -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.17.0/dist/tf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.3/dist/coco-ssd.min.js"></script>
+
+  <!-- ── Mòduls de l'app ────────────────────────────────────── -->
+  <script src="./js/detection_engine.js"></script>
   <script src="./js/bluetooth_uart.js"></script>
-  <script src="./js/object_tracking.js"></script>
   <script src="./js/script.js"></script>
+
 </body>
 </html>

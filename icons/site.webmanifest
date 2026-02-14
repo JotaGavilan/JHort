@@ -1,21 +1,11 @@
 {
-  "name": "JAnimalDetection",
-  "short_name": "JAnimalDetection",
+  "name": "JHort - Animals amb IA",
+  "short_name": "JHort",
   "icons": [
-    {
-      "src": "/web-app-manifest-192x192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable"
-    },
-    {
-      "src": "/web-app-manifest-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
-    }
+    { "src": "android-chrome-192x192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "android-chrome-512x512.png", "sizes": "512x512", "type": "image/png" }
   ],
-  "theme_color": "#ffffff",
-  "background_color": "#ffffff",
+  "theme_color": "#0d1117",
+  "background_color": "#0d1117",
   "display": "standalone"
 }

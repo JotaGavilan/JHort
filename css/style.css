@@ -1,158 +1,348 @@
+/* ============================================================
+   style.css  –  jAnimal
+   Estètica: HUD tecnològic fosc, accents verds/cian
+   Estructura consistent amb jFace
+   ============================================================ */
+
+/* ── Variables ────────────────────────────────────────────── */
+:root {
+  --bg:         #0d1117;
+  --bg2:        #161b22;
+  --bg3:        #21262d;
+  --accent:     #3fb950;
+  --accent2:    #00e5ff;
+  --text:       #e6edf3;
+  --text-dim:   #7d8590;
+  --border:     #30363d;
+  --danger:     #f85149;
+  --radius:     8px;
+  --font-mono:  'Courier New', Courier, monospace;
+}
+
+/* ── Reset i base ─────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
 body {
-  margin: 0;
-  font-family: sans-serif;
-  background: #111;
-  color: #fff;
-  text-align: center;
-}
-header {
-  background: #222;
-  padding: 10px;
-  font-size: 1.5em;
-}
-canvas {
-  width: 100%;
-  height: auto;
-  min-height: 240px;
-  border-radius: 10px;
-  background-color: black;
-}
-#video {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: auto;
-  transform: scaleX(-1);
-  z-index: 1;
-  object-fit: cover;
-}
-#controls {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  background: rgba(0, 0, 0, 0.85);
-  padding: 10px;
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  flex-wrap: wrap;
-  z-index: 10000;
-}
-button {
-  font-size: 1em;
-  padding: 10px;
-  border: none;
-  border-radius: 5px;
-}
-#info-layer {
-  display: none;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.95);
-  color: white;
-  z-index: 10001;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
+  font-family: var(--font-mono);
+  background:  var(--bg);
+  color:       var(--text);
+  text-align:  center;
+  overflow-x:  hidden;
+  min-height:  100dvh;
 }
 
-#data-panel {
-  margin-top: 10px;
-  font-size: 1.2em;
-  font-weight: bold;
-}
-#info-layer {
-  display: none;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.95);
-  color: white;
-  z-index: 10001;
-  overflow: hidden;
-  display: flex;
+/* ── Capçalera ────────────────────────────────────────────── */
+h1 {
+  display:     flex;
   align-items: center;
   justify-content: center;
-  padding: 0;
-}
-.info-box {
-  background: #222;
-  padding: 2rem;
-  border-radius: 10px;
-  max-width: 500px;
-  text-align: left;
-  box-shadow: 0 0 15px rgba(0,0,0,0.8);
-}
-.info-box ul {
-  padding-left: 1rem;
-}
-.info-box a {
-  color: #4fc3f7;
-}
-.close-btn {
-  background: #f44336;
-  color: white;
-  font-size: 1em;
-  border: none;
-  padding: 10px 16px;
-  margin-top: 1rem;
-  border-radius: 5px;
+  gap:         0.5em;
+  font-size:   1.1em;
+  font-weight: 700;
+  padding:     10px 16px;
+  background:  var(--bg2);
+  border-bottom: 1px solid var(--border);
+  letter-spacing: 0.05em;
+  color:       var(--accent);
+  text-transform: uppercase;
 }
 
+h1 img {
+  width:  1.8em;
+  height: 1.8em;
+}
+
+/* ── Contenidor de vídeo ──────────────────────────────────── */
 #video-container {
-  position: relative;
-  width: 100%;
-  max-width: 640px;
-  margin: auto;
-}
-#video, #canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: auto;
-  z-index: 2;
-}
-#video {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: auto;
-  transform: scaleX(-1);
-  z-index: 1;
-  object-fit: cover;
-}
-#canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: auto;
-  z-index: 2;
+  position:   relative;
+  width:      100%;
+  max-width:  640px;
+  margin:     0 auto;
+  background: #000;
+  aspect-ratio: 4/3;
+  overflow:   hidden;
 }
 
-#data-panel {
-  position: fixed;
-  top: 50px;
-  left: 0;
-  width: 100%;
-  padding: 8px 0;
-  font-size: 1.2em;
-  font-weight: bold;
-  color: #00e5ff;
-  z-index: 9999;
+#video {
+  position:  absolute;
+  inset:     0;
+  width:     100%;
+  height:    100%;
+  object-fit: cover;
+  transform: scaleX(-1);
+  z-index:   1;
 }
-#data-panel {
-  display: inline-block;
-    padding: 0.5em;
-  border-radius: 0.3em;
+
+#canvas {
+  position:  absolute;
+  inset:     0;
+  width:     100%;
+  height:    100%;
+  z-index:   2;
+}
+
+/* ── Panel de dades ───────────────────────────────────────── */
+#detection-panel {
+  position:   fixed;
+  top:        52px;
+  left:       0;
+  width:      100%;
+  z-index:    9999;
+  display:    flex;
+  flex-wrap:  wrap;
+  justify-content: center;
+  gap:        6px;
+  padding:    6px 10px;
+  pointer-events: none;
+}
+
+.no-det {
+  font-size:  0.85em;
+  color:      var(--text-dim);
+  background: rgba(0,0,0,0.6);
+  padding:    4px 10px;
+  border-radius: var(--radius);
+}
+
+.det-item {
+  position:   relative;
+  display:    inline-flex;
+  align-items: center;
+  gap:        6px;
+  background: rgba(0, 0, 0, 0.75);
+  border:     2px solid #fff;
+  border-radius: var(--radius);
+  padding:    4px 10px;
+  overflow:   hidden;
+  min-width:  100px;
+  backdrop-filter: blur(4px);
+}
+
+.det-bar {
+  position:   absolute;
+  bottom:     0;
+  left:       0;
+  height:     3px;
+  opacity:    0.8;
+  transition: width 0.3s ease;
+}
+
+.det-label {
+  font-size:   0.9em;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.det-score {
+  font-size:  0.85em;
+  color:      var(--accent2);
+}
+
+/* ── Controls inferiors ───────────────────────────────────── */
+#controls {
+  position:   fixed;
+  bottom:     0;
+  width:      100%;
+  background: rgba(13, 17, 23, 0.92);
+  border-top: 1px solid var(--border);
+  padding:    10px 12px;
+  display:    flex;
+  justify-content: center;
+  align-items: center;
+  gap:        8px;
+  flex-wrap:  wrap;
+  z-index:    10000;
+  backdrop-filter: blur(8px);
+}
+
+button {
+  font-family: var(--font-mono);
+  font-size:  0.85em;
+  padding:    9px 14px;
+  border:     1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg3);
+  color:      var(--text);
+  cursor:     pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+button:hover,
+button:active {
+  background: var(--bg2);
+  border-color: var(--accent);
+  color:      var(--accent);
+}
+
+button.connected {
+  border-color: var(--accent);
+  color:        var(--accent);
+}
+
+#status {
+  width:      100%;
+  text-align: center;
+  font-size:  0.8em;
+  color:      var(--text-dim);
+  padding-top: 2px;
+}
+
+/* ── Capa genèrica (info + config) ────────────────────────── */
+.layer {
+  display:    none;
+  position:   fixed;
+  inset:      0;
+  background: rgba(0, 0, 0, 0.92);
+  z-index:    10001;
+  align-items: center;
+  justify-content: center;
+  padding:    16px;
+  overflow-y: auto;
+}
+
+.layer.visible { display: flex; }
+
+.layer-box {
+  background:  var(--bg2);
+  border:      1px solid var(--border);
+  border-radius: 12px;
+  padding:     1.5rem;
+  width:       100%;
+  max-width:   480px;
+  text-align:  left;
+  box-shadow:  0 0 40px rgba(0,0,0,0.8);
+}
+
+.layer-box h2 {
+  font-size:  1.1em;
+  color:      var(--accent);
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.5rem;
+}
+
+.layer-box p, .layer-box li {
+  font-size:  0.88em;
+  line-height: 1.6;
+  color:      var(--text-dim);
+  margin-bottom: 0.5rem;
+}
+
+.layer-box ul {
+  padding-left: 1.2rem;
+  margin-bottom: 0.8rem;
+}
+
+.layer-box a {
+  color: var(--accent2);
+  text-decoration: none;
+}
+
+.layer-box code {
+  background: var(--bg3);
+  padding:    2px 6px;
+  border-radius: 4px;
+  color:      var(--accent2);
+  font-family: var(--font-mono);
+}
+
+.close-btn {
+  background:  var(--danger) !important;
+  border-color: var(--danger) !important;
+  color:       #fff !important;
+  width:       100%;
+  margin-top:  1rem;
+  padding:     10px;
+  font-size:   0.9em;
+}
+
+.close-btn:hover {
+  opacity: 0.85;
+}
+
+/* ── Configuració: llista de categories ───────────────────── */
+#category-list {
+  display:    flex;
+  flex-direction: column;
+  gap:        10px;
+  margin:     1rem 0;
+}
+
+.cat-item {
+  display:    flex;
+  align-items: center;
+  gap:        10px;
+  cursor:     pointer;
+  padding:    8px 10px;
+  border-radius: var(--radius);
+  border:     1px solid var(--border);
+  background: var(--bg3);
+  transition: border-color 0.2s;
+}
+
+.cat-item:hover {
+  border-color: var(--accent);
+}
+
+.cat-item input[type="checkbox"] {
+  width:   18px;
+  height:  18px;
+  accent-color: var(--accent);
+  cursor:  pointer;
+}
+
+.cat-color {
+  display:       inline-block;
+  width:         12px;
+  height:        12px;
+  border-radius: 50%;
+  flex-shrink:   0;
+}
+
+.cat-item span:last-child {
+  font-size:   0.9em;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ── Control d'interval ───────────────────────────────────── */
+.interval-control {
+  display:    flex;
+  align-items: center;
+  gap:        12px;
+  margin-top: 1.2rem;
+  padding:    12px;
+  background: var(--bg3);
+  border:     1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.interval-control label {
+  font-size:  0.85em;
+  color:      var(--text-dim);
+  min-width:  130px;
+}
+
+.interval-control input[type="range"] {
+  flex:       1;
+  accent-color: var(--accent);
+  cursor:     pointer;
+}
+
+#intervalLabel {
+  font-size:   1em;
+  font-weight: 700;
+  color:       var(--accent2);
+  min-width:   30px;
+  text-align:  right;
+}
+
+/* ── Scroll en capes ──────────────────────────────────────── */
+@media (max-height: 600px) {
+  .layer { align-items: flex-start; padding-top: 20px; }
 }
