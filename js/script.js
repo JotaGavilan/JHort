@@ -51,35 +51,36 @@ async function startVideo() {
 function drawDetections(detections) {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Mirall horitzontal (consistent amb jFace)
+  const visible = detections.filter(d => activeCategories.has(d.class));
+
+  // Pas 1: marcs dins del mirror (posicio correcta)
   ctx.save();
   ctx.scale(-1, 1);
   ctx.translate(-canvas.width, 0);
-
-  detections.forEach(det => {
-    if (!activeCategories.has(det.class)) return;
-
+  visible.forEach(det => {
     const [x, y, w, h] = det.bbox;
-    const color = getCategoryColor(det.class);
-
-    // Recuadre
-    ctx.strokeStyle = color;
+    ctx.strokeStyle = getCategoryColor(det.class);
     ctx.lineWidth   = 2;
     ctx.strokeRect(x, y, w, h);
-
-    // Fons de l'etiqueta
-    const label = `${det.label} ${det.score}%`;
-    ctx.font = 'bold 14px monospace';
-    const textW = ctx.measureText(label).width + 8;
-    ctx.fillStyle = color;
-    ctx.fillRect(x, y - 20, textW, 20);
-
-    // Text de l'etiqueta
-    ctx.fillStyle = '#000';
-    ctx.fillText(label, x + 4, y - 5);
   });
-
   ctx.restore();
+
+  // Pas 2: etiquetes fora del mirror (text no invertit)
+  // x_mirror = canvas.width - x - w
+  ctx.font = 'bold 14px monospace';
+  visible.forEach(det => {
+    const [x, y, w] = det.bbox;
+    const color  = getCategoryColor(det.class);
+    const label  = `${det.label} ${det.score}%`;
+    const mx     = canvas.width - x - w;
+    const textW  = ctx.measureText(label).width + 8;
+    const labelY = Math.max(20, y);
+
+    ctx.fillStyle = color;
+    ctx.fillRect(mx, labelY - 20, textW, 20);
+    ctx.fillStyle = '#000';
+    ctx.fillText(label, mx + 4, labelY - 5);
+  });
 }
 
 // Color per categoria (fàcil d'ampliar per residus)

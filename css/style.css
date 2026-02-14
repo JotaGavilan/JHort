@@ -48,8 +48,12 @@ h1 {
 }
 
 h1 img {
-  width:  1.8em;
-  height: 1.8em;
+  width:         2em;
+  height:        2em;
+  background:    #fff;
+  border-radius: 50%;
+  padding:       3px;
+  flex-shrink:   0;
 }
 
 /* ── Contenidor de vídeo ──────────────────────────────────── */
@@ -210,7 +214,7 @@ button.connected {
   border-radius: 12px;
   padding:     1.5rem;
   width:       100%;
-  max-width:   480px;
+  max-width:   680px;
   text-align:  left;
   box-shadow:  0 0 40px rgba(0,0,0,0.8);
 }
