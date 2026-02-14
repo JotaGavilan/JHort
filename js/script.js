@@ -1,5 +1,5 @@
 // ============================================================
-//  script.js  –  Coordinador principal de jAnimal
+//  script.js  –  Coordinador principal de JHort – El guardià del teu bancal
 //  Gestiona: càmera, canvas, configuració, envios UART
 // ============================================================
 

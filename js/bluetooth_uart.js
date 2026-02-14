@@ -74,7 +74,7 @@ function onDisconnected(event) {
 
 /**
  * Envia una cadena per UART.
- * Format esperat per a jAnimal: "gat:87,gos:45"
+ * Format esperat per a JHort: "gat:87,ocell:45"
  * @param {string} data
  */
 function sendUARTData(data) {

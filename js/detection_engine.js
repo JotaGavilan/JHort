@@ -1,6 +1,6 @@
 // ============================================================
 //  detection_engine.js  –  Motor de detecció d'objectes
-//  JHort – Animals amb IA
+//  JHort – El guardià del teu bancal
 //  Basat en TensorFlow.js + COCO-SSD
 //
 //  Per adaptar esta aplicació a una altra categoria (p.ex.
