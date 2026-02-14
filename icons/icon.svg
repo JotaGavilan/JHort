@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Fons negre (consistent amb la icona original) -->
+  <rect width="512" height="512" fill="#0d0b1a"/>
+
+  <!-- ══════════════════════════════════════════════
+       COLOM (part superior esquerra) — color cian #67e8f9
+       Reinterpretat de la paloma geomètrica original
+       ══════════════════════════════════════════════ -->
+
+  <!-- cos principal -->
+  <polygon points="180,140 230,110 270,130 250,165 200,170" fill="#67e8f9" opacity="0.95"/>
+  <!-- pit -->
+  <polygon points="200,170 250,165 245,200 195,205" fill="#38d9f0" opacity="0.9"/>
+  <!-- ala superior esquerra -->
+  <polygon points="130,130 180,140 160,165 115,158" fill="#a5f0fa" opacity="0.85"/>
+  <!-- ala superior dreta (plegada) -->
+  <polygon points="270,130 310,120 305,155 250,165" fill="#38d9f0" opacity="0.88"/>
+  <!-- ala inferior esquerra (en vol) -->
+  <polygon points="115,158 160,165 145,195 90,185" fill="#67e8f9" opacity="0.75"/>
+  <!-- ala baixa dreta -->
+  <polygon points="250,165 305,155 295,185 245,200" fill="#1ec8e0" opacity="0.8"/>
+  <!-- cua -->
+  <polygon points="195,205 245,200 250,230 200,235" fill="#38d9f0" opacity="0.9"/>
+  <!-- cua punta dreta -->
+  <polygon points="245,200 270,215 260,240 250,230" fill="#67e8f9" opacity="0.7"/>
+  <!-- cap -->
+  <polygon points="230,110 265,100 270,130 230,130" fill="#a5f0fa" opacity="0.95"/>
+  <!-- bec -->
+  <polygon points="265,100 285,108 270,115" fill="#fcd34d" opacity="1"/>
+  <!-- ull -->
+  <circle cx="252" cy="112" r="5" fill="#0d0b1a"/>
+  <circle cx="253" cy="111" r="2" fill="#fff" opacity="0.6"/>
+
+  <!-- línies low-poly (malla) colom -->
+  <g stroke="#0d0b1a" stroke-width="1" fill="none" opacity="0.4">
+    <line x1="180" y1="140" x2="230" y2="110"/>
+    <line x1="230" y1="110" x2="270" y2="130"/>
+    <line x1="270" y1="130" x2="250" y2="165"/>
+    <line x1="250" y1="165" x2="200" y2="170"/>
+    <line x1="200" y1="170" x2="180" y2="140"/>
+    <line x1="130" y1="130" x2="180" y2="140"/>
+    <line x1="160" y1="165" x2="115" y2="158"/>
+    <line x1="115" y1="158" x2="90" y2="185"/>
+    <line x1="90" y1="185" x2="145" y2="195"/>
+    <line x1="305" y1="155" x2="295" y2="185"/>
+    <line x1="245" y1="200" x2="250" y2="230"/>
+    <line x1="250" y1="230" x2="200" y2="235"/>
+  </g>
+
+  <!-- ══════════════════════════════════════════════
+       GAT (part inferior dreta) — color lila #a89cff
+       Reinterpretat del cap de gat geomètric original
+       ══════════════════════════════════════════════ -->
+
+  <!-- orella esquerra -->
+  <polygon points="280,295 305,255 330,290" fill="#c4baff" opacity="0.95"/>
+  <polygon points="290,292 308,265 325,290" fill="#6c63ff" opacity="0.6"/>
+  <!-- orella dreta -->
+  <polygon points="370,290 395,255 420,295" fill="#c4baff" opacity="0.95"/>
+  <polygon points="378,290 396,265 412,292" fill="#6c63ff" opacity="0.6"/>
+
+  <!-- crani -->
+  <polygon points="280,295 350,275 420,295 415,340 345,350 285,340" fill="#a89cff" opacity="0.95"/>
+  <!-- front -->
+  <polygon points="305,255 350,275 395,255 420,295 280,295" fill="#b8b0ff" opacity="0.85"/>
+  <!-- cara esquerra -->
+  <polygon points="285,340 345,350 335,400 290,390" fill="#9088ee" opacity="0.9"/>
+  <!-- cara dreta -->
+  <polygon points="345,350 415,340 410,390 360,400" fill="#7b72dd" opacity="0.9"/>
+  <!-- barbeta -->
+  <polygon points="335,400 360,400 350,425 340,420" fill="#a89cff" opacity="0.85"/>
+
+  <!-- ull esquerre -->
+  <ellipse cx="318" cy="320" rx="18" ry="14" fill="#1e1a2e"/>
+  <ellipse cx="318" cy="320" rx="13" ry="10" fill="#6c63ff" opacity="0.5"/>
+  <circle cx="318" cy="320" r="6" fill="#0d0b1a"/>
+  <circle cx="321" cy="317" r="3" fill="#fff" opacity="0.7"/>
+
+  <!-- ull dret -->
+  <ellipse cx="382" cy="320" rx="18" ry="14" fill="#1e1a2e"/>
+  <ellipse cx="382" cy="320" rx="13" ry="10" fill="#6c63ff" opacity="0.5"/>
+  <circle cx="382" cy="320" r="6" fill="#0d0b1a"/>
+  <circle cx="385" cy="317" r="3" fill="#fff" opacity="0.7"/>
+
+  <!-- nas/morro -->
+  <polygon points="342,355 358,355 350,368" fill="#f0abfc" opacity="0.9"/>
+  <!-- bigotis -->
+  <line x1="295" y1="362" x2="340" y2="358" stroke="#c4baff" stroke-width="1.5" opacity="0.6"/>
+  <line x1="295" y1="370" x2="340" y2="368" stroke="#c4baff" stroke-width="1.5" opacity="0.5"/>
+  <line x1="360" y1="358" x2="405" y2="362" stroke="#c4baff" stroke-width="1.5" opacity="0.6"/>
+  <line x1="360" y1="368" x2="405" y2="370" stroke="#c4baff" stroke-width="1.5" opacity="0.5"/>
+
+  <!-- línies low-poly (malla) gat -->
+  <g stroke="#0d0b1a" stroke-width="1" fill="none" opacity="0.35">
+    <line x1="280" y1="295" x2="350" y2="275"/>
+    <line x1="350" y1="275" x2="420" y2="295"/>
+    <line x1="420" y1="295" x2="415" y2="340"/>
+    <line x1="415" y1="340" x2="345" y2="350"/>
+    <line x1="345" y1="350" x2="285" y2="340"/>
+    <line x1="285" y1="340" x2="280" y2="295"/>
+    <line x1="350" y1="275" x2="345" y2="350"/>
+    <line x1="285" y1="340" x2="335" y2="400"/>
+    <line x1="415" y1="340" x2="410" y2="390"/>
+    <line x1="335" y1="400" x2="360" y2="400"/>
+  </g>
+
+  <!-- Marc de mira vermell (consistent amb la icona original) -->
+  <!-- Cantonada superior esquerra -->
+  <path d="M 30,30 L 30,90 M 30,30 L 90,30" stroke="#e74c3c" stroke-width="8" fill="none" stroke-linecap="square"/>
+  <!-- Cantonada superior dreta -->
+  <path d="M 482,30 L 482,90 M 482,30 L 422,30" stroke="#e74c3c" stroke-width="8" fill="none" stroke-linecap="square"/>
+  <!-- Cantonada inferior esquerra -->
+  <path d="M 30,482 L 30,422 M 30,482 L 90,482" stroke="#e74c3c" stroke-width="8" fill="none" stroke-linecap="square"/>
+  <!-- Cantonada inferior dreta -->
+  <path d="M 482,482 L 482,422 M 482,482 L 422,482" stroke="#e74c3c" stroke-width="8" fill="none" stroke-linecap="square"/>
+</svg>

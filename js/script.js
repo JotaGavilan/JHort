@@ -20,7 +20,7 @@ const intervalLabel  = document.getElementById('intervalLabel');
 const categoryList   = document.getElementById('category-list');
 
 // ── Estat ────────────────────────────────────────────────────
-let sendIntervalMs   = 1000;    // interval d'enviament per UART (ms)
+let sendIntervalMs   = 2000;    // interval d'enviament per UART (ms)
 let lastDetections   = [];      // darrera llista de deteccions filtrades
 let lastSendTime     = 0;
 let activeCategories = new Set(getCategories());  // totes actives per defecte

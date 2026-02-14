@@ -32,13 +32,44 @@
 
 body {
   font-family:  var(--font);
-  background:   var(--bg);
+  background:   #090812;
   color:        var(--text);
   text-align:   center;
   overflow:     hidden;
   height:       100dvh;
   display:      flex;
   flex-direction: column;
+  align-items:  center;
+  justify-content: center;
+}
+
+/* Embolcall que limita l'amplada en escriptori */
+body > h1,
+body > #video-container,
+body > #detection-panel,
+body > #controls,
+body > .layer {
+  width:     100%;
+  max-width: 480px;
+}
+
+body > h1 {
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+body > #controls {
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+}
+
+/* En mòbil ocupa tota la pantalla */
+@media (max-width: 520px) {
+  body > h1,
+  body > #video-container,
+  body > #detection-panel,
+  body > #controls {
+    max-width: 100%;
+    border-radius: 0;
+  }
 }
 
 /* ── Capçalera ────────────────────────────────────────────── */
