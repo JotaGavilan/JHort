@@ -53,40 +53,59 @@ function drawDetections(detections) {
 
   const visible = detections.filter(d => activeCategories.has(d.class));
 
-  ctx.font = 'bold 14px monospace';
   visible.forEach(det => {
     const [x, y, w, h] = det.bbox;
     const color  = getCategoryColor(det.class);
-    const label  = `${det.label} ${det.score}%`;
-    const textW  = ctx.measureText(label).width + 8;
-    const labelY = Math.max(20, y);
+    const label  = `${det.label}  ${det.score}%`;
+    const r      = 8;   // border-radius
 
-    // Marc
+    // Marc arrodonit
     ctx.strokeStyle = color;
     ctx.lineWidth   = 2;
-    ctx.strokeRect(x, y, w, h);
+    ctx.shadowColor = color;
+    ctx.shadowBlur  = 10;
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.arcTo(x + w, y, x + w, y + r, r);
+    ctx.lineTo(x + w, y + h - r);
+    ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
+    ctx.lineTo(x + r, y + h);
+    ctx.arcTo(x, y + h, x, y + h - r, r);
+    ctx.lineTo(x, y + r);
+    ctx.arcTo(x, y, x + r, y, r);
+    ctx.closePath();
+    ctx.stroke();
+    ctx.shadowBlur = 0;
 
-    // Fons etiqueta
+    // Etiqueta
+    ctx.font = '600 13px Poppins, sans-serif';
+    const textW  = ctx.measureText(label).width + 14;
+    const labelY = Math.max(22, y);
+
+    // Fons etiqueta arrodonit
     ctx.fillStyle = color;
-    ctx.fillRect(x, labelY - 20, textW, 20);
+    ctx.beginPath();
+    ctx.roundRect(x, labelY - 20, textW, 20, 5);
+    ctx.fill();
 
     // Text
-    ctx.fillStyle = '#000';
-    ctx.fillText(label, x + 4, labelY - 5);
+    ctx.fillStyle = '#fff';
+    ctx.fillText(label, x + 7, labelY - 5);
   });
 }
 
 // Color per categoria (fàcil d'ampliar per residus)
 function getCategoryColor(cls) {
   const colors = {
-    cat:    '#00e5ff',
-    bird:   '#ffd740',
-    person: '#ff6d00',
+    cat:    '#a89cff',   // lila clar
+    bird:   '#67e8f9',   // cian
+    person: '#f0abfc',   // malva
     // Residus futurs:
-    // bottle: '#e040fb',
-    // cup:    '#40c4ff',
+    // bottle: '#86efac',
+    // cup:    '#fcd34d',
   };
-  return colors[cls] || '#ffffff';
+  return colors[cls] || '#a89cff';
 }
 
 // ── Panel de deteccions ───────────────────────────────────────

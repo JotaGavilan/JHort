@@ -47,22 +47,22 @@
         <h2>⚙️ Configuració</h2>
       </div>
 
-      <p>Tria els animals que vols detectar:</p>
+      <p class="section-title">Animals a detectar</p>
       <div id="category-list"></div>
 
-      <p style="margin-top:1.2rem;">Model d'intel·ligència artificial:</p>
+      <p class="section-title">Model d'intel·ligència artificial</p>
       <div id="model-selector"></div>
-      <p style="font-size:0.78em; margin-top:0.4rem;">
-        El model precís detecta millor a distància però és més lent. Si el mòbil va lent, usa el ràpid.
+      <p style="font-size:0.75em; color:#8b82b8; margin-top:0.4rem; line-height:1.5;">
+        El model precís detecta millor a distància però és més lent.<br>
         <strong>Canviar el model recarrega la IA</strong> (uns segons).
       </p>
 
       <div class="interval-control">
-        <label for="intervalSlider">Interval d'enviament:</label>
+        <label for="intervalSlider">Interval d'enviament</label>
         <input type="range" id="intervalSlider" min="1" max="15" value="1" step="1">
         <span id="intervalLabel">1s</span>
       </div>
-      <p style="font-size:0.78em; margin-top:0.5rem;">
+      <p style="font-size:0.75em; color:#8b82b8; margin-top:0.4rem;">
         Cada quants segons s'envien les dades a la micro:bit per Bluetooth.
       </p>
 
@@ -79,37 +79,41 @@
       </div>
 
       <p>
-        <strong>JHort</strong> utilitza intel·ligència artificial
-        (<a href="https://github.com/tensorflow/tfjs-models/tree/master/coco-ssd" target="_blank">TensorFlow.js COCO-SSD</a>)
-        per a detectar animals en temps real amb la càmera del dispositiu,
-        i envia les dades a una micro:bit per Bluetooth (sense aparellament previ).
+        <strong>JHort</strong> detecta animals en temps real utilitzant
+        <a href="https://github.com/tensorflow/tfjs-models/tree/master/coco-ssd" target="_blank">TensorFlow.js COCO-SSD</a>,
+        una IA que s'executa completament al navegador, sense enviar cap dada a Internet.
       </p>
 
       <p><strong>Animals detectables:</strong></p>
       <ul>
         <li>🐱 Gat</li>
-        <li>🐶 Gos</li>
         <li>🐦 Ocell</li>
         <li>🧍 Persona</li>
       </ul>
 
-      <p><strong>Format de les dades enviades per UART:</strong></p>
+      <p><strong>Enviament a micro:bit per Bluetooth:</strong></p>
       <ul>
-        <li>Llista separada per comes: <code>animal:percentatge</code></li>
-        <li>Eixemple: <code>gat:87,gos:45</code></li>
+        <li>Format UART: <code>animal:percentatge</code> separats per comes</li>
+        <li>Eixemple: <code>gat:87,ocell:45</code></li>
         <li>Si no es detecta res, no s'envia res.</li>
+        <li>L'interval d'enviament es pot ajustar (d'1 a 15 segons).</li>
       </ul>
 
-      <p><strong>⚙️ Configuració:</strong> prem el botó per a triar quins animals detectar i cada quant s'envien les dades a la micro:bit (d'1 a 15 segons).</p>
+      <p><strong>Models d'IA disponibles:</strong></p>
+      <ul>
+        <li>⚡ <strong>Ràpid</strong> — recomanat per a mòbils amb poca potència.</li>
+        <li>🔍 <strong>Precís</strong> — millor detecció a distància, més lent.</li>
+      </ul>
 
       <p>
-        Esta app <strong>NO envia dades a cap servidor</strong>. Tot el processament es fa
-        al navegador, localment. Una volta carregada la pàgina pots desactivar
-        Internet per a assegurar-te que cap dada ix del teu dispositiu.
+        Una volta carregada la pàgina pots desactivar Internet:
+        tot el processament és local al teu dispositiu.
       </p>
 
-      <p>Fet per J. amb ❤️ i tecnologia IA</p>
-      <p>IES Jorge Juan, Alacant, 2026</p>
+      <p class="info-footer">
+        Fet per J. amb ❤️ i tecnologia IA<br>
+        IES Jorge Juan, Alacant, 2026
+      </p>
 
       <button class="close-btn" id="closeInfoBtn">Tancar</button>
     </div>
