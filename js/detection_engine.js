@@ -98,27 +98,19 @@ async function initModel(modelKey) {
       model = await cocoSsd.load({ base: cfg.base });
 
     } else if (cfg.type === 'yolo') {
-      // Configurar ruta dels fitxers WASM auxiliars (mateix CDN que el script)
       ort.env.wasm.wasmPaths = 'https://cdn.jsdelivr.net/npm/onnxruntime-web@1.20.1/dist/';
-      ort.env.wasm.numThreads = 1;  // 1 thread per compatibilitat màxima
-
-      let loaded = false;
-      const backends = ['webgl', 'wasm'];
-      for (const backend of backends) {
-        try {
-          console.log(`[YOLO] Provant backend: ${backend}`);
-          yoloSession = await ort.InferenceSession.create(cfg.url, {
-            executionProviders: [backend],
-            graphOptimizationLevel: 'all',
-          });
-          console.log(`[YOLO] ✅ Carregat amb backend: ${backend}`);
-          loaded = true;
-          break;
-        } catch (backendErr) {
-          console.warn(`[YOLO] ❌ Backend ${backend} fallat:`, backendErr.message || backendErr);
-        }
+      ort.env.wasm.numThreads = 1;
+      try {
+        console.log('[YOLO] Carregant amb backend: wasm');
+        yoloSession = await ort.InferenceSession.create(cfg.url, {
+          executionProviders: ['wasm'],
+          graphOptimizationLevel: 'all',
+        });
+        console.log('[YOLO] ✅ Model carregat correctament');
+      } catch (e) {
+        console.error('[YOLO] ❌ Error:', e.message || e);
+        throw new Error('YOLO_LOAD_FAILED');
       }
-      if (!loaded) throw new Error('YOLO_LOAD_FAILED');
     }
     if (onModelReadyCallback) onModelReadyCallback();
   } catch (e) {
