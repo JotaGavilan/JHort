@@ -413,6 +413,24 @@ button.connected {
   color:       var(--text);
 }
 
+.model-info {
+  display:        flex;
+  flex-direction: column;
+  gap:            2px;
+}
+
+.model-label {
+  font-size:   0.82em;
+  font-weight: 600;
+  color:       var(--text);
+}
+
+.model-desc {
+  font-size:   0.72em;
+  font-weight: 400;
+  color:       var(--text-dim);
+}
+
 /* ── Control d'interval ───────────────────────────────────── */
 .interval-control {
   display:     flex;

@@ -53,7 +53,7 @@
       <p class="section-title">Model d'intel·ligència artificial</p>
       <div id="model-selector"></div>
       <p style="font-size:0.75em; color:#8b82b8; margin-top:0.4rem; line-height:1.5;">
-        El model precís detecta millor a distància però és més lent.<br>
+        <strong>YOLOv8</strong> detecta millor a distància però requereix descarregar el model (~6MB) la primera vegada.<br>
         <strong>Canviar el model recarrega la IA</strong> (uns segons).
       </p>
 
@@ -79,9 +79,9 @@
       </div>
 
       <p>
-        <strong>JHort – El guardià del teu bancal</strong> detecta animals en temps real utilitzant
-        <a href="https://github.com/tensorflow/tfjs-models/tree/master/coco-ssd" target="_blank">TensorFlow.js COCO-SSD</a>,
-        una IA que s'executa completament al navegador, sense enviar cap dada a Internet.
+        <strong>JHort – El guardià del teu bancal</strong> detecta animals en temps real
+        mitjançant intel·ligència artificial i envia les dades a una micro:bit per Bluetooth
+        (sense aparellament previ). Tot el processament es fa al navegador, al teu dispositiu.
       </p>
 
       <p><strong>Animals detectables:</strong></p>
@@ -101,13 +101,15 @@
 
       <p><strong>Models d'IA disponibles:</strong></p>
       <ul>
-        <li>⚡ <strong>Ràpid</strong> — recomanat per a mòbils amb poca potència.</li>
-        <li>🔍 <strong>Precís</strong> — millor detecció a distància, més lent.</li>
+        <li>⚡ <strong>Ràpid</strong> (COCO-SSD lite) — recomanat per a mòbils amb poca potència.</li>
+        <li>🔍 <strong>Precís</strong> (COCO-SSD v2) — més precís que el ràpid, més lent.</li>
+        <li>🚀 <strong>YOLOv8</strong> — el millor a distància. Descarrega ~6MB la primera vegada. Requereix connexió a Internet per carregar-se.</li>
       </ul>
 
       <p>
-        Una volta carregada la pàgina pots desactivar Internet:
-        tot el processament és local al teu dispositiu.
+        Amb els models <strong>Ràpid</strong> i <strong>Precís</strong> pots desactivar Internet
+        una volta carregada la pàgina: tot el processament és local.
+        El model <strong>YOLOv8</strong> requereix connexió per descarregar-se (~6MB) la primera vegada.
       </p>
 
       <p class="info-footer">
@@ -122,6 +124,8 @@
   <!-- Llibreries -->
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.17.0/dist/tf.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.3/dist/coco-ssd.min.js"></script>
+  <!-- ONNX Runtime Web (necessari per a YOLOv8) -->
+  <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.17.1/dist/ort.min.js"></script>
 
   <!-- Mòduls de l'app -->
   <script src="./js/detection_engine.js"></script>

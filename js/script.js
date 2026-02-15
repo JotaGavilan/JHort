@@ -220,7 +220,10 @@ function buildModelSelector() {
     <label class="cat-item">
       <input type="radio" name="modelChoice" value="${key}" ${key === current ? 'checked' : ''}
              onchange="changeModel('${key}')">
-      <span>${m.label}</span>
+      <span class="model-info">
+        <span class="model-label">${m.label}</span>
+        <span class="model-desc">${m.description}</span>
+      </span>
     </label>
   `).join('');
 }
