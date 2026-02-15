@@ -160,8 +160,12 @@ onModelReady(() => {
   scheduleSend();
 });
 
-onModelError(() => {
-  statusEl.textContent = '❌ Error carregant el model IA';
+onModelError((err) => {
+  if (err && err.message === 'YOLO_MISSING') {
+    statusEl.textContent = '❌ YOLOv8: cal afegir yolov8n.onnx a la carpeta models/';
+  } else {
+    statusEl.textContent = '❌ Error carregant el model IA';
+  }
 });
 
 // ── Bluetooth ─────────────────────────────────────────────────

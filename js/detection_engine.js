@@ -52,10 +52,15 @@ const MODELS = {
   },
   yolo: {
     type:            'yolo',
-    // Model YOLOv8n ONNX allotjat públicament
-    url:             'https://huggingface.co/niclas-preu/yolov8n-onnx/resolve/main/yolov8n.onnx',
+    // ─────────────────────────────────────────────────────────
+    //  El fitxer yolov8n.onnx ha d'estar a: jHort/models/yolov8n.onnx
+    //  Descàrrega (~6MB):
+    //  https://github.com/ultralytics/assets/releases/download/v0.0.0/yolov8n.onnx
+    //  i col·loca'l a la carpeta models/ del projecte.
+    // ─────────────────────────────────────────────────────────
+    url:             './models/yolov8n.onnx',
     label:           '🚀 YOLOv8 (millor distància)',
-    description:     'Detecta millor a distància. Requereix més memòria.',
+    description:     'Detecta millor a distància. Cal tindre el fitxer yolov8n.onnx a models/',
     score_threshold: 0.25,
     input_size:      640,
   },
@@ -94,9 +99,18 @@ async function initModel(modelKey) {
 
     } else if (cfg.type === 'yolo') {
       // ONNX Runtime Web ha d'estar carregat via <script> a index.html
-      yoloSession = await ort.InferenceSession.create(cfg.url, {
-        executionProviders: ['wasm'],
-      });
+      try {
+        yoloSession = await ort.InferenceSession.create(cfg.url, {
+          executionProviders: ['wasm'],
+        });
+      } catch (e) {
+        // Error específic si no troba el fitxer local
+        const msg = e.message || '';
+        if (msg.includes('404') || msg.includes('Failed to fetch') || msg.includes('not found')) {
+          throw new Error('YOLO_MISSING');
+        }
+        throw e;
+      }
     }
     if (onModelReadyCallback) onModelReadyCallback();
   } catch (e) {
