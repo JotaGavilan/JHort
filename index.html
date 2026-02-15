@@ -53,9 +53,8 @@
       <p class="section-title">Model d'intel·ligència artificial</p>
       <div id="model-selector"></div>
       <p style="font-size:0.75em; color:#8b82b8; margin-top:0.4rem; line-height:1.5;">
-        <strong>YOLOv8</strong> requereix el fitxer <code>yolov8n.onnx</code> a la carpeta <code>models/</code>.<br>
-        Instruccions al fitxer <code>models/README.txt</code>.<br>
-        <strong>Canviar el model recarrega la IA</strong> (uns segons).
+        💡 Si no saps quin triar, usa <strong>Ràpid</strong>.<br>
+        <strong>EfficientDet</strong> tarda uns segons extra la primera vegada que s'activa.
       </p>
 
       <div class="interval-control">
@@ -80,37 +79,50 @@
       </div>
 
       <p>
-        <strong>JHort – El guardià del teu bancal</strong> detecta animals en temps real
-        mitjançant intel·ligència artificial i envia les dades a una micro:bit per Bluetooth
-        (sense aparellament previ). Tot el processament es fa al navegador, al teu dispositiu.
+        <strong>JHort – El guardià del teu bancal</strong> utilitza la càmera del mòbil
+        per detectar animals en temps real i avisa la micro:bit per Bluetooth.
+        Tot funciona al mateix dispositiu, sense enviar res a Internet.
       </p>
 
-      <p><strong>Animals detectables:</strong></p>
+      <p><strong>Animals que detecta:</strong></p>
       <ul>
         <li>🐱 Gat</li>
         <li>🐦 Ocell</li>
         <li>🧍 Persona</li>
       </ul>
 
-      <p><strong>Enviament a micro:bit per Bluetooth:</strong></p>
+      <p><strong>Missatge enviat a la micro:bit:</strong></p>
       <ul>
-        <li>Format UART: <code>animal:percentatge</code> separats per comes</li>
+        <li>Format: <code>animal:percentatge</code> separat per comes</li>
         <li>Eixemple: <code>gat:87,ocell:45</code></li>
         <li>Si no es detecta res, no s'envia res.</li>
-        <li>L'interval d'enviament es pot ajustar (d'1 a 15 segons).</li>
       </ul>
 
-      <p><strong>Models d'IA disponibles:</strong></p>
+      <p><strong>Models de detecció disponibles:</strong></p>
       <ul>
-        <li>⚡ <strong>Ràpid</strong> (COCO-SSD lite) — recomanat per a mòbils amb poca potència.</li>
-        <li>🔍 <strong>Precís</strong> (COCO-SSD v2) — més precís que el ràpid, més lent.</li>
-        <li>🚀 <strong>YOLOv8</strong> — el millor a distància. Requereix el fitxer <code>yolov8n.onnx</code> a la carpeta <code>models/</code>. Vegeu les instruccions al fitxer <code>models/README.txt</code>: es pot obtenir convertint el model oficial amb <code>pip install ultralytics</code>, o descarregant-lo ja convertit de Hugging Face.</li>
+        <li>
+          ⚡ <strong>Ràpid</strong> —
+          Ideal per a mòbils antics o amb poca bateria.
+          Detecta bé de prop (fins a ~1,5m).
+          Consumeix poca memòria i va fluid.
+        </li>
+        <li>
+          🔍 <strong>Precís</strong> —
+          Millor que el Ràpid per a objectes en moviment o en angles difícils.
+          Una mica més lent i consumeix més bateria.
+          Distància similar (~1,5-2m).
+        </li>
+        <li>
+          🚀 <strong>EfficientDet</strong> —
+          El millor per detectar animals llunyans (fins a ~3-4m) o xicotets.
+          Notablement més lent; recomanat per a tauletes o mòbils potents.
+          La primera vegada que s'activa tarda uns segons més a carregar-se.
+        </li>
       </ul>
 
       <p>
-        Amb els models <strong>Ràpid</strong> i <strong>Precís</strong> pots desactivar Internet
-        una volta carregada la pàgina: tot el processament és local.
-        El model <strong>YOLOv8</strong> requereix connexió per descarregar-se (~6MB) la primera vegada.
+        <strong>Consell:</strong> comença amb el model <em>Ràpid</em>.
+        Si no detecta bé a la distància que necessites, prova <em>EfficientDet</em>.
       </p>
 
       <p class="info-footer">
@@ -125,17 +137,7 @@
   <!-- Llibreries -->
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.17.0/dist/tf.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.3/dist/coco-ssd.min.js"></script>
-  <!-- ONNX Runtime Web (necessari per a YOLOv8) -->
-  <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.20.1/dist/ort.min.js"></script>
-
-  <!-- Configuració ONNX Runtime (abans de detection_engine.js) -->
-  <script>
-    // Indica a ONNX Runtime on trobar els fitxers .wasm auxiliars
-    if (typeof ort !== 'undefined') {
-      ort.env.wasm.wasmPaths = 'https://cdn.jsdelivr.net/npm/onnxruntime-web@1.20.1/dist/';
-      ort.env.wasm.numThreads = 1;
-    }
-  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/automl@0.0.5/dist/automl.min.js"></script>
 
   <!-- Mòduls de l'app -->
   <script src="./js/detection_engine.js"></script>

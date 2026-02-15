@@ -161,13 +161,8 @@ onModelReady(() => {
 });
 
 onModelError((err) => {
-  if (err && err.message === 'YOLO_MISSING') {
-    statusEl.textContent = '❌ YOLOv8: cal afegir yolov8n.onnx a la carpeta models/';
-  } else if (err && err.message === 'YOLO_LOAD_FAILED') {
-    statusEl.textContent = '❌ YOLOv8: model incompatible amb este navegador. Prova Chrome o Edge.';
-  } else {
-    statusEl.textContent = '❌ Error carregant el model IA';
-  }
+  console.error('Model error:', err);
+  statusEl.textContent = '❌ Error carregant el model IA';
 });
 
 // ── Bluetooth ─────────────────────────────────────────────────
