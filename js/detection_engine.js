@@ -98,18 +98,26 @@ async function initModel(modelKey) {
       model = await cocoSsd.load({ base: cfg.base });
 
     } else if (cfg.type === 'yolo') {
-      // ONNX Runtime Web ha d'estar carregat via <script> a index.html
-      try {
-        yoloSession = await ort.InferenceSession.create(cfg.url, {
-          executionProviders: ['wasm'],
-        });
-      } catch (e) {
-        // Error específic si no troba el fitxer local
-        const msg = e.message || '';
-        if (msg.includes('404') || msg.includes('Failed to fetch') || msg.includes('not found')) {
-          throw new Error('YOLO_MISSING');
+      // Prova backends en ordre: webgl (GPU) → wasm (CPU)
+      let loaded = false;
+      const backends = ['webgl', 'wasm'];
+      for (const backend of backends) {
+        try {
+          console.log(`[YOLO] Provant backend: ${backend}`);
+          ort.env.wasm.numThreads = 1;
+          yoloSession = await ort.InferenceSession.create(cfg.url, {
+            executionProviders: [backend],
+            graphOptimizationLevel: 'all',
+          });
+          console.log(`[YOLO] Model carregat amb backend: ${backend}`);
+          loaded = true;
+          break;
+        } catch (backendErr) {
+          console.warn(`[YOLO] Backend ${backend} fallat:`, backendErr.message || backendErr);
         }
-        throw e;
+      }
+      if (!loaded) {
+        throw new Error('YOLO_LOAD_FAILED');
       }
     }
     if (onModelReadyCallback) onModelReadyCallback();
