@@ -124,8 +124,6 @@ async function detectDirect(videoEl, cfg) {
 
 // ─────────────────────────────────────────────────────────────
 //  DETECCIÓ PER ZONES (mode distance)
-//  Dividix el frame en 4 quadrants i detecta en cadascun.
-//  Les coordenades es reescalen al frame complet.
 // ─────────────────────────────────────────────────────────────
 async function detectTiled(videoEl, cfg) {
   const vw = videoEl.videoWidth;
@@ -145,32 +143,43 @@ async function detectTiled(videoEl, cfg) {
 
   const allDetections = [];
 
-  // Detecció sobre el frame complet (objectes grans/propers)
-  const full = await detectDirect(videoEl, cfg);
-  allDetections.push(...full);
-
-  // Detecció sobre cada quadrant (objectes petits/llunyans)
+  // Detecció sobre cada quadrant
   for (const tile of tiles) {
+    tileCtx.clearRect(0, 0, tw, th);
     tileCtx.drawImage(videoEl, tile.sx, tile.sy, tw, th, 0, 0, tw, th);
     const preds = await model.detect(tileCanvas);
-    const filtered = preds
+    preds
       .filter(p => CATEGORIES.includes(p.class) && p.score >= cfg.score_threshold)
-      .map(p => ({
+      .forEach(p => allDetections.push({
         class: p.class,
         label: TRANSLATIONS[p.class] || p.class,
         score: Math.round(p.score * 100),
-        bbox:  [
+        _rawScore: p.score,
+        bbox: [
           p.bbox[0] + tile.ox,
           p.bbox[1] + tile.oy,
           p.bbox[2],
           p.bbox[3],
         ],
       }));
-    allDetections.push(...filtered);
   }
 
-  // NMS per eliminar duplicats entre quadrants i frame complet
-  return nms(allDetections, 0.40);
+  // NMS per classe (evita eliminar persones diferents)
+  return nmsByClass(allDetections, 0.20);
+}
+
+// NMS aplicat per classe per separat
+function nmsByClass(dets, iouThresh) {
+  const byClass = {};
+  dets.forEach(d => {
+    if (!byClass[d.class]) byClass[d.class] = [];
+    byClass[d.class].push(d);
+  });
+  const result = [];
+  Object.values(byClass).forEach(group => {
+    result.push(...nms(group, iouThresh));
+  });
+  return result;
 }
 
 // NMS simple

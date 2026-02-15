@@ -136,13 +136,24 @@ function buildUARTMessage(detections) {
 }
 
 // Usa setTimeout recursiu per poder canviar l'interval en calent
+let hadDetections = false;   // recorda si l'últim tick tenia deteccions
+
 function scheduleSend() {
   function tick() {
     if (isBluetoothConnected()) {
       const msg = buildUARTMessage(lastDetections);
-      if (msg) sendUARTData(msg);
+      if (msg) {
+        // Hi ha deteccions → envia normalment
+        sendUARTData(msg);
+        hadDetections = true;
+      } else if (hadDetections) {
+        // Acaba de desaparèixer → envia '0' una sola vegada
+        sendUARTData('0');
+        hadDetections = false;
+      }
+      // Si no hi ha deteccions i ja s'ha enviat '0', no envia res
     }
-    setTimeout(tick, sendIntervalMs);  // usa sempre el valor actual
+    setTimeout(tick, sendIntervalMs);
   }
   setTimeout(tick, sendIntervalMs);
 }

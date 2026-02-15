@@ -54,7 +54,7 @@
       <div id="model-selector"></div>
       <p style="font-size:0.75em; color:#8b82b8; margin-top:0.4rem; line-height:1.5;">
         💡 Si no saps quin triar, usa <strong>Ràpid</strong>.<br>
-        <strong>EfficientDet</strong> tarda uns segons extra la primera vegada que s'activa.
+        <strong>Llarga distància</strong> fa 5 anàlisis per frame: pot anar lent en mòbils antics.
       </p>
 
       <div class="interval-control">
@@ -95,34 +95,38 @@
       <ul>
         <li>Format: <code>animal:percentatge</code> separat per comes</li>
         <li>Eixemple: <code>gat:87,ocell:45</code></li>
-        <li>Si no es detecta res, no s'envia res.</li>
+        <li>Quan l'animal desapareix de pla, s'envia <code>0</code> una sola vegada.</li>
+        <li>Mentre no es detecta res, no s'envia res més.</li>
       </ul>
 
       <p><strong>Models de detecció disponibles:</strong></p>
       <ul>
         <li>
-          ⚡ <strong>Ràpid</strong> —
-          Ideal per a mòbils antics o amb poca bateria.
-          Detecta bé de prop (fins a ~1,5m).
-          Consumeix poca memòria i va fluid.
+          ⚡ <strong>Ràpid</strong> — Model: <em>COCO-SSD + MobileNet v2 lite</em> (Google, 2018).<br>
+          Model lleuger optimitzat per a mòbils de baixa potència.
+          Detecta bé objectes grans i propers (~1,5m).
+          Molt fluid i consumeix poca bateria.
+          <strong>Recomanat per al dia a dia.</strong>
         </li>
         <li>
-          🔍 <strong>Precís</strong> —
-          Millor que el Ràpid per a objectes en moviment o en angles difícils.
-          Una mica més lent i consumeix més bateria.
-          Distància similar (~1,5-2m).
+          🔍 <strong>Precís</strong> — Model: <em>COCO-SSD + MobileNet v2</em> (Google, 2018).<br>
+          Versió completa del mateix model. Millor en objectes en moviment,
+          angles difícils o mala il·luminació. Una mica més lent.
+          Distància similar al Ràpid (~1,5-2m).
         </li>
         <li>
-          🚀 <strong>EfficientDet</strong> —
-          El millor per detectar animals llunyans (fins a ~3-4m) o xicotets.
-          Notablement més lent; recomanat per a tauletes o mòbils potents.
-          La primera vegada que s'activa tarda uns segons més a carregar-se.
+          🚀 <strong>Llarga distància</strong> — Model: <em>COCO-SSD + MobileNet v2</em> amb <em>detecció per zones</em>.<br>
+          Usa el mateix model que el Precís, però dividix la imatge en
+          4 quadrants i analitza cadascun per separat. Açò permet
+          detectar animals que ocupen pocs píxels (fins a ~3-4m).
+          Fa 4 anàlisis per frame: és notablement més lent.
+          <strong>Recomanat per a tauletes o quan necessites detectar a distància.</strong>
         </li>
       </ul>
 
       <p>
-        <strong>Consell:</strong> comença amb el model <em>Ràpid</em>.
-        Si no detecta bé a la distància que necessites, prova <em>EfficientDet</em>.
+        <strong>Consell:</strong> comença amb <em>Ràpid</em>.
+        Si no detecta a la distància que necessites, prova <em>Llarga distància</em>.
       </p>
 
       <p class="info-footer">
