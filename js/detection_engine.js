@@ -71,10 +71,10 @@ async function initModel(modelKey) {
       model = await cocoSsd.load({ base: cfg.base });
 
     } else if (cfg.type === 'efficientdet') {
-      // EfficientDet via @tensorflow-models/object-detection
-      // Usa automl-image-classification intern per a l'API
-      model = await tf.automl.loadObjectDetection(
-        'https://tfhub.dev/tensorflow/efficientdet/lite0/detection/1'
+      // EfficientDet-Lite0 via tf.loadGraphModel (TF Hub, format SavedModel JS)
+      model = await tf.loadGraphModel(
+        'https://tfhub.dev/tensorflow/efficientdet/lite0/detection/1',
+        { fromTFHub: true }
       );
     }
 
@@ -140,53 +140,58 @@ async function detectCOCOSSD(videoEl, cfg) {
 }
 
 async function detectEfficientDet(videoEl, cfg) {
-  // EfficientDet retorna { boxes, scores, classes }
-  // bbox format: [ymin, xmin, ymax, xmax] normalitzat 0-1
+  // EfficientDet-Lite0 espera un tensor [1, H, W, 3] uint8
   const vw = videoEl.videoWidth  || videoEl.width;
   const vh = videoEl.videoHeight || videoEl.height;
 
-  const predictions = await model.detect(videoEl, { score_threshold: cfg.score_threshold });
+  const results = tf.tidy(() => {
+    const imgTensor = tf.browser.fromPixels(videoEl);          // [H, W, 3]
+    const batched   = imgTensor.expandDims(0);                  // [1, H, W, 3]
+    return model.execute(batched);
+  });
 
-  return predictions
-    .filter(p => {
-      // L'API pot retornar el nom de la classe o l'índex
-      const cls = normalizeClass(p.label || p.class);
-      return CATEGORIES.includes(cls);
-    })
-    .map(p => {
-      const cls  = normalizeClass(p.label || p.class);
-      const box  = p.box || p.bbox;
-      // Convertir [ymin,xmin,ymax,xmax] normalitzat → [x,y,w,h] en px
-      let bbox;
-      if (Array.isArray(box) && box.length === 4) {
-        if (box[0] <= 1 && box[1] <= 1) {
-          // Format normalitzat [ymin, xmin, ymax, xmax]
-          const ymin = box[0], xmin = box[1], ymax = box[2], xmax = box[3];
-          bbox = [xmin * vw, ymin * vh, (xmax - xmin) * vw, (ymax - ymin) * vh];
-        } else {
-          // Ja en píxels [x, y, w, h]
-          bbox = box;
-        }
-      } else {
-        bbox = [0, 0, vw, vh];
-      }
-      return {
-        class: cls,
-        label: TRANSLATIONS[cls] || cls,
-        score: Math.round((p.score || p.probability || 0) * 100),
-        bbox,
-      };
+  // EfficientDet retorna un dict amb:
+  //   'detection_boxes'   → [1, N, 4]  (ymin, xmin, ymax, xmax) normalitzat
+  //   'detection_scores'  → [1, N]
+  //   'detection_classes' → [1, N]     (índex COCO 1-based)
+  const boxesTensor   = results['detection_boxes']   || results[Object.keys(results)[0]];
+  const scoresTensor  = results['detection_scores']  || results[Object.keys(results)[1]];
+  const classesTensor = results['detection_classes'] || results[Object.keys(results)[2]];
+
+  const boxes   = await boxesTensor.array();
+  const scores  = await scoresTensor.array();
+  const classes = await classesTensor.array();
+
+  // Alliberar tensors
+  if (Array.isArray(results)) results.forEach(t => t.dispose());
+  else Object.values(results).forEach(t => t.dispose());
+
+  // Mapa índex COCO (1-based) → nom de classe
+  const COCO_CLASSES = {
+    1: 'person', 15: 'bird', 16: 'cat',
+  };
+
+  const detections = [];
+  const n = scores[0].length;
+
+  for (let i = 0; i < n; i++) {
+    const score = scores[0][i];
+    if (score < cfg.score_threshold) continue;
+
+    const clsIdx = Math.round(classes[0][i]);
+    const cls    = COCO_CLASSES[clsIdx];
+    if (!cls || !CATEGORIES.includes(cls)) continue;
+
+    const [ymin, xmin, ymax, xmax] = boxes[0][i];
+    detections.push({
+      class: cls,
+      label: TRANSLATIONS[cls] || cls,
+      score: Math.round(score * 100),
+      bbox:  [xmin * vw, ymin * vh, (xmax - xmin) * vw, (ymax - ymin) * vh],
     });
-}
+  }
 
-// Normalitza noms de classe (EfficientDet pot retornar noms llargs)
-function normalizeClass(raw) {
-  if (!raw) return '';
-  const s = String(raw).toLowerCase().trim();
-  if (s.includes('cat'))    return 'cat';
-  if (s.includes('bird'))   return 'bird';
-  if (s.includes('person') || s.includes('human')) return 'person';
-  return s;
+  return detections;
 }
 
 // ── API pública ───────────────────────────────────────────────
